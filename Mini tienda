@@ -1,0 +1,28 @@
+def menu():
+    print("1.Crear artículo")
+    print("2. Listar artículos")
+    print("3. Buscar artículo por id")
+    print("4. Actualizar artículo")
+    print("5. Eliminar artículo")
+    print("6. Alternar activo/inactivo")
+    print("7. Salir")
+def opcion_crear_articulo(articulos, siguiente_id):
+    nombre = input("Ingrese el nombre del artículo: ")
+    precio = float(input("Ingrese el precio del artículo: "))
+    stock = int(input("Ingrese el stock del artículo: "))
+    articulo = {
+        "id": siguiente_id,
+        "nombre": nombre,
+        "precio": precio,
+        "stock": stock,
+        "activo": True
+    }
+    inventario [
+        {"id": 1, "nombre": "Camisa", "precio": 29.99, "stock": 50, "activo": True},
+        {"id": 2, "nombre": "Pantalones", "precio": 49.99, "stock": 40, "activo": True},
+        {"id": 3, "nombre": "Zapatos", "precio": 89.99, "stock": 30, "activo": True}
+        
+    ]
+    articulos.append(articulo)
+    print(f"Artículo con id {siguiente_id} creado.")
+    return siguiente_id + 1
