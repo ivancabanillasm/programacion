@@ -1,28 +1,105 @@
 def menu():
-    print("1.Crear artículo")
-    print("2. Listar artículos")
-    print("3. Buscar artículo por id")
-    print("4. Actualizar artículo")
-    print("5. Eliminar artículo")
-    print("6. Alternar activo/inactivo")
-    print("7. Salir")
-def opcion_crear_articulo(articulos, siguiente_id):
-    nombre = input("Ingrese el nombre del artículo: ")
-    precio = float(input("Ingrese el precio del artículo: "))
-    stock = int(input("Ingrese el stock del artículo: "))
-    articulo = {
-        "id": siguiente_id,
-        "nombre": nombre,
-        "precio": precio,
-        "stock": stock,
-        "activo": True
-    }
-    inventario [
-        {"id": 1, "nombre": "Camisa", "precio": 29.99, "stock": 50, "activo": True},
-        {"id": 2, "nombre": "Pantalones", "precio": 49.99, "stock": 40, "activo": True},
-        {"id": 3, "nombre": "Zapatos", "precio": 89.99, "stock": 30, "activo": True}
-        
-    ]
-    articulos.append(articulo)
-    print(f"Artículo con id {siguiente_id} creado.")
+    print("""
+1. Crear artículo
+2. Listar artículos
+3. Buscar por ID
+4. Actualizar artículo
+5. Eliminar artículo
+6. Activar/Inactivar artículo
+7. Salir
+""")
+
+
+def crear_articulo(articulos, siguiente_id):
+    nombre = input("Nombre: ")
+    precio = float(input("Precio: "))
+    stock = int(input("Stock: "))
+    articulos.append({"id": siguiente_id, "nombre": nombre, "precio": precio, "stock": stock, "activo": True})
+    print(f"Artículo '{nombre}' creado (ID {siguiente_id}).")
     return siguiente_id + 1
+
+
+def listar_articulos(articulos):
+    if not articulos:
+        print("No hay artículos.")
+    else:
+        for a in articulos:
+            estado = "Activo" if a["activo"] else "Inactivo"
+            print(f"{a['id']} - {a['nombre']} | {a['precio']}€ | Stock: {a['stock']} | {estado}")
+
+
+def buscar_por_id(articulos, id_buscar):
+    for a in articulos:
+        if a["id"] == id_buscar:
+            return a
+    return None
+
+
+def actualizar_articulo(articulos):
+    id_buscar = int(input("ID del artículo a actualizar: "))
+    art = buscar_por_id(articulos, id_buscar)
+    if art:
+        nuevo_nombre = input("Nuevo nombre (Enter para mantener): ")
+        nuevo_precio = input("Nuevo precio (Enter para mantener): ")
+        nuevo_stock = input("Nuevo stock (Enter para mantener): ")
+        if nuevo_nombre:
+            art["nombre"] = nuevo_nombre
+        if nuevo_precio:
+            art["precio"] = float(nuevo_precio)
+        if nuevo_stock:
+            art["stock"] = int(nuevo_stock)
+        print("Artículo actualizado.")
+    else:
+        print("Artículo no encontrado.")
+
+
+def eliminar_articulo(articulos):
+    id_buscar = int(input("ID del artículo a eliminar: "))
+    art = buscar_por_id(articulos, id_buscar)
+    if art:
+        articulos.remove(art)
+        print("Artículo eliminado.")
+    else:
+        print("No encontrado.")
+
+
+def alternar_activo(articulos):
+    id_buscar = int(input("ID del artículo: "))
+    art = buscar_por_id(articulos, id_buscar)
+    if art:
+        art["activo"] = not art["activo"]
+        print(f"Ahora está {'Activo' if art['activo'] else 'Inactivo'}.")
+    else:
+        print("No encontrado.")
+articulos = [
+    {"id": 1, "nombre": "Camisa", "precio": 29.99, "stock": 50, "activo": True},
+    {"id": 2, "nombre": "Pantalones", "precio": 49.99, "stock": 40, "activo": True},
+    {"id": 3, "nombre": "Zapatos", "precio": 89.99, "stock": 30, "activo": True}
+]
+siguiente_id = 4
+salir = False
+
+while not salir:
+    menu()
+    opcion = input("Opción: ")
+
+    match opcion:
+        case "1":
+            siguiente_id = crear_articulo(articulos, siguiente_id)
+        case "2":
+            listar_articulos(articulos)
+        case "3":
+            id_buscar = int(input("ID: "))
+            art = buscar_por_id(articulos, id_buscar)
+            print(art if art else "No encontrado.")
+        case "4":
+            actualizar_articulo(articulos)
+        case "5":
+            eliminar_articulo(articulos)
+        case "6":
+            alternar_activo(articulos)
+        case "7":
+            print("Saliendo del programa...")
+            salir = True
+        case _:
+            print("Opción no válida.")
