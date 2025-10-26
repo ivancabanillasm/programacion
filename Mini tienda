@@ -6,9 +6,9 @@ def menu():
 4. Actualizar artículo
 5. Eliminar artículo
 6. Activar/Inactivar artículo
-7. Salir
+7. Menú usuarios
+8. Salir
 """)
-
 
 def crear_articulo(articulos, siguiente_id):
     nombre = input("Nombre: ")
@@ -18,22 +18,19 @@ def crear_articulo(articulos, siguiente_id):
     print(f"Artículo '{nombre}' creado (ID {siguiente_id}).")
     return siguiente_id + 1
 
-
 def listar_articulos(articulos):
     if not articulos:
         print("No hay artículos.")
     else:
         for a in articulos:
             estado = "Activo" if a["activo"] else "Inactivo"
-            print(f"{a['id']} - {a['nombre']} | {a['precio']}€ | Stock: {a['stock']} | {estado}")
-
+            print(f"{a['id']} - {a['nombre']} - {a['precio']}€ - Stock: {a['stock']} - {estado}")
 
 def buscar_por_id(articulos, id_buscar):
     for a in articulos:
         if a["id"] == id_buscar:
             return a
     return None
-
 
 def actualizar_articulo(articulos):
     id_buscar = int(input("ID del artículo a actualizar: "))
@@ -52,7 +49,6 @@ def actualizar_articulo(articulos):
     else:
         print("Artículo no encontrado.")
 
-
 def eliminar_articulo(articulos):
     id_buscar = int(input("ID del artículo a eliminar: "))
     art = buscar_por_id(articulos, id_buscar)
@@ -62,7 +58,6 @@ def eliminar_articulo(articulos):
     else:
         print("No encontrado.")
 
-
 def alternar_activo(articulos):
     id_buscar = int(input("ID del artículo: "))
     art = buscar_por_id(articulos, id_buscar)
@@ -71,18 +66,118 @@ def alternar_activo(articulos):
         print(f"Ahora está {'Activo' if art['activo'] else 'Inactivo'}.")
     else:
         print("No encontrado.")
+
+def menu_usuarios():
+    print("""
+--- MENÚ USUARIOS ---
+1. Crear usuario
+2. Listar usuarios
+3. Buscar por ID
+4. Actualizar usuario
+5. Eliminar usuario
+6. Activar/Inactivar usuario
+7. Volver
+""")
+
+def crear_usuario(usuarios, siguiente_id_usuario):
+    nombre = input("Nombre: ")
+    email = input("Email: ")
+    if "@" in email and "." in email:
+        usuarios.append({"id": siguiente_id_usuario, "nombre": nombre, "email": email, "activo": True})
+        print(f"Usuario '{nombre}' creado (ID {siguiente_id_usuario}).")
+        return siguiente_id_usuario + 1
+    else:
+        print("Email no válido.")
+        return siguiente_id_usuario
+
+def listar_usuarios(usuarios):
+    if not usuarios:
+        print("No hay usuarios.")
+    else:
+        for u in usuarios:
+            estado = "Activo" if u["activo"] else "Inactivo"
+            print(f"{u['id']} - {u['nombre']} - {u['email']} - {estado}")
+
+def buscar_usuario_por_id(usuarios, id_buscar):
+    for u in usuarios:
+        if u["id"] == id_buscar:
+            return u
+    return None
+
+def actualizar_usuario(usuarios):
+    id_buscar = int(input("ID del usuario a actualizar: "))
+    usr = buscar_usuario_por_id(usuarios, id_buscar)
+    if usr:
+        nuevo_nombre = input("Nuevo nombre (Enter para mantener): ")
+        nuevo_email = input("Nuevo email (Enter para mantener): ")
+        if nuevo_nombre:
+            usr["nombre"] = nuevo_nombre
+        if nuevo_email and "@" in nuevo_email and "." in nuevo_email:
+            usr["email"] = nuevo_email
+        print("Usuario actualizado.")
+    else:
+        print("Usuario no encontrado.")
+
+def eliminar_usuario(usuarios):
+    id_buscar = int(input("ID del usuario a eliminar: "))
+    usr = buscar_usuario_por_id(usuarios, id_buscar)
+    if usr:
+        usuarios.remove(usr)
+        print("Usuario eliminado.")
+    else:
+        print("No encontrado.")
+
+def alternar_activo_usuario(usuarios):
+    id_buscar = int(input("ID del usuario: "))
+    usr = buscar_usuario_por_id(usuarios, id_buscar)
+    if usr:
+        usr["activo"] = not usr["activo"]
+        print(f"Ahora está {'Activo' if usr['activo'] else 'Inactivo'}.")
+    else:
+        print("No encontrado.")
+
+def ejecutar_menu_usuarios(usuarios, siguiente_id_usuario):
+    volver = False
+    while not volver:
+        menu_usuarios()
+        opcion = input("Opción: ")
+        match opcion:
+            case "1":
+                siguiente_id_usuario = crear_usuario(usuarios, siguiente_id_usuario)
+            case "2":
+                listar_usuarios(usuarios)
+            case "3":
+                id_buscar = int(input("ID: "))
+                usr = buscar_usuario_por_id(usuarios, id_buscar)
+                print(usr if usr else "No encontrado.")
+            case "4":
+                actualizar_usuario(usuarios)
+            case "5":
+                eliminar_usuario(usuarios)
+            case "6":
+                alternar_activo_usuario(usuarios)
+            case "7":
+                volver = True
+            case _:
+                print("Opción no válida.")
+    return siguiente_id_usuario
+
 articulos = [
     {"id": 1, "nombre": "Camisa", "precio": 29.99, "stock": 50, "activo": True},
     {"id": 2, "nombre": "Pantalones", "precio": 49.99, "stock": 40, "activo": True},
     {"id": 3, "nombre": "Zapatos", "precio": 89.99, "stock": 30, "activo": True}
 ]
+usuarios = [
+    {"id": 1, "nombre": "Ana", "email": "ana@gmail.com", "activo": True}
+]
+
 siguiente_id = 4
+siguiente_id_usuario = 2
 salir = False
 
 while not salir:
     menu()
     opcion = input("Opción: ")
-
     match opcion:
         case "1":
             siguiente_id = crear_articulo(articulos, siguiente_id)
@@ -99,7 +194,10 @@ while not salir:
         case "6":
             alternar_activo(articulos)
         case "7":
-            print("Saliendo del programa...")
+            siguiente_id_usuario = ejecutar_menu_usuarios(usuarios, siguiente_id_usuario)
+        case "8":
+            print("Saliendo del programa.")
             salir = True
         case _:
+
             print("Opción no válida.")
